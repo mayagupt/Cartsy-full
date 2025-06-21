@@ -32,11 +32,11 @@ export default function CartsyPrototype() {
         {messages.map((msg, idx) => (
           <div
             key={idx}
-            className={\`p-2 rounded-lg w-fit max-w-[80%] ${
+            className={`p-2 rounded-lg w-fit max-w-[80%] ${
               msg.sender === "assistant"
-              ? "bg-gray-100 text-left"
-              : "bg-blue-100 ml-auto text-right"
-          }\`}
+                ? "bg-gray-100 text-left"
+                : "bg-blue-100 ml-auto text-right"
+            }`}
           >
             {msg.text}
           </div>
