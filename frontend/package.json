@@ -1,0 +1,10 @@
+{
+  "name": "cartsy-ui",
+  "version": "1.0.0",
+  "dependencies": {
+    "ai": "^0.x",
+    "@ai-sdk/react": "^0.x",
+    "@ai-sdk/huggingface": "^0.x"
+  }
+}
+
