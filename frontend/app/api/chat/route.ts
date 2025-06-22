@@ -1,18 +1,21 @@
+// app/api/chat/route.ts (Next.js Edge Runtime)
 import { HfInference } from '@huggingface/inference';
-import { HuggingFaceStream, StreamingTextResponse } from 'ai';
-
-const hf = new HfInference(process.env.HUGGINGFACE_API_KEY!);
+import { streamText } from 'ai/stream-helpers'; // updated import
 
 export const runtime = 'edge';
 
 export async function POST(req: Request) {
   const { prompt } = await req.json();
-  const stream = await hf.textGenerationStream({
-    model: 'OpenAssistant/oasst-sft-4-pythia-12b-epoch-3.5',
+  const hf = new HfInference(process.env.HUGGINGFACE_API_KEY!);
+
+  const hfgStream = await hf.textGenerationStream({
+    model: 'openassistant/oasst-sft-4-pythia-12b-epoch-3.5',
     inputs: prompt,
-    parameters: { max_new_tokens: 150 }
+    parameters: { max_new_tokens: 200 },
   });
-  const aiStream = HuggingFaceStream(stream);
-  return new StreamingTextResponse(aiStream);
+
+  const textStream = streamText(hfgStream); // wrap the stream
+
+  return textStream.toDataStreamResponse(); // streaming-ready response
 }
 
