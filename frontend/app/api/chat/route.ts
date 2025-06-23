@@ -1,6 +1,6 @@
 // app/api/chat/route.ts (Next.js Edge Runtime)
 import { HfInference } from '@huggingface/inference';
-import { streamText } from 'ai/stream-helpers'; // updated import
+import { streamText } from 'ai'; // updated import
 
 export const runtime = 'edge';
 
