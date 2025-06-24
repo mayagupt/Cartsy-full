@@ -1,26 +1,35 @@
-// app/api/chat/route.ts (Edge API Route)
+import { HfInference } from "@huggingface/inference";
 
-import { HfInference } from '@huggingface/inference';
-import { NextResponse } from 'next/server';
-
-export const runtime = 'edge';
+export const runtime = "edge";
 
 const hf = new HfInference(process.env.HUGGINGFACE_API_KEY!);
 
-export async function POST(req: Request) {
-  const body = await req.json();
-  const prompt = body.messages?.[body.messages.length - 1]?.content || 'Hello!';
+export async function POST(request: Request) {
+  const body = await request.json();
+  const { messages } = body;
 
-  const response = await hf.textGeneration({
-    model: 'mistralai/Mistral-7B-Instruct-v0.2',
+  const prompt = messages.map((m: any) => `${m.role}: ${m.content}`).join("\n");
+
+  const response = await hf.textGenerationStream({
+    model: "mistral-7b-instruct",
     inputs: prompt,
-    parameters: {
-      max_new_tokens: 200,
-      temperature: 0.7,
-      return_full_text: false,
+    parameters: { return_full_text: false },
+    stream: true,
+  });
+
+  const encoder = new TextEncoder();
+  const stream = new ReadableStream({
+    async start(controller) {
+      for await (const chunk of response) {
+        controller.enqueue(encoder.encode(chunk.token.text));
+      }
+      controller.close();
     },
   });
 
-  return NextResponse.json({ text: response.generated_text });
+  return new Response(stream, {
+    headers: {
+      "Content-Type": "text/plain; charset=utf-8",
+    },
+  });
 }
-

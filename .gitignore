@@ -2,3 +2,5 @@
 /.next/
 venv/
 *.pyc
+/.env.local
+/backend/.env
