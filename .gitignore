@@ -2,5 +2,5 @@
 /.next/
 venv/
 *.pyc
-/.env.local
+frontend/.env.local
 /backend/.env
