@@ -4,3 +4,6 @@ venv/
 *.pyc
 frontend/.env.local
 /backend/.env
+.env.local
+.env
+.env.local
